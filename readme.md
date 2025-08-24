@@ -847,24 +847,64 @@ Code: 200 OK
 
 <div align="center">
 
+### 📁 Backend Architecture
+
 ```
-📁 backend/
-├── 📁 config/
-│   └── 🔗 connectDB.js          # Database connection
-├── 📁 controllers/
-│   ├── 🎮 passenger.controller.js # Passenger controllers
-│   └── 🎮 captain.controller.js   # Captain controllers
-├── 📁 middleware/
-│   └── 🛡️ auth.middleware.js    # JWT authentication
-├── 📁 models/
-│   ├── 📊 passenger.model.js    # Passenger schema
-│   └── 📊 captain.model.js      # Captain schema
-├── 📁 routes/
-│   ├── 🛣️ passenger.route.js    # Passenger API routes
-│   └── 🛣️ captain.route.js      # Captain API routes
-├── 🚀 app.js                    # Express app setup
-└── 📦 package.json
+sawaridotpk-v2/
+├── 📁 backend/
+│   ├── 📁 config/
+│   │   └── 🔗 connectDB.js              # MongoDB connection
+│   ├── 📁 controllers/
+│   │   ├── 🎮 passenger.controller.js   # Passenger API logic
+│   │   └── 🎮 captain.controller.js     # Captain API logic
+│   ├── 📁 middleware/
+│   │   └── 🛡️ auth.middleware.js        # JWT authentication
+│   ├── 📁 models/
+│   │   ├── 📊 passenger.model.js        # Passenger schema
+│   │   └── 📊 captain.model.js          # Captain schema
+│   ├── 📁 routes/
+│   │   ├── 🛣️ passenger.route.js        # Passenger endpoints
+│   │   └── 🛣️ captain.route.js          # Captain endpoints
+│   ├── 🚀 app.js                        # Express server
+│   ├── 📦 package.json                  # Dependencies
+│   └── 📦 package-lock.json             # Lock file
+├── 📄 readme.md                         # Documentation
+└── 📄 .gitignore                        # Git ignore
 ```
+
+</div>
+
+### 🏗️ Architecture Overview
+
+<div align="center">
+
+| **Layer** | **Directory** | **Purpose** | **Files** |
+|-----------|---------------|-------------|-----------|
+| **🛣️ Routes** | `routes/` | API endpoint definitions | `passenger.route.js`, `captain.route.js` |
+| **🎮 Controllers** | `controllers/` | Business logic & request handling | `passenger.controller.js`, `captain.controller.js` |
+| **📊 Models** | `models/` | Database schemas & validation | `passenger.model.js`, `captain.model.js` |
+| **🛡️ Middleware** | `middleware/` | Authentication & validation | `auth.middleware.js` |
+| **⚙️ Config** | `config/` | Database & environment setup | `connectDB.js` |
+
+</div>
+
+### 📋 File Status
+
+<div align="center">
+
+| **File** | **Type** | **Status** | **Description** |
+|----------|----------|------------|-----------------|
+| `app.js` | Server | ✅ Ready | Express app configuration |
+| `connectDB.js` | Database | ✅ Ready | MongoDB connection setup |
+| `auth.middleware.js` | Security | ✅ Ready | JWT authentication |
+| `passenger.controller.js` | API | ✅ Ready | Passenger CRUD operations |
+| `captain.controller.js` | API | ✅ Ready | Captain CRUD operations |
+| `passenger.model.js` | Schema | ✅ Ready | Passenger data model |
+| `captain.model.js` | Schema | ✅ Ready | Captain data model |
+| `passenger.route.js` | Routes | ✅ Ready | Passenger API endpoints |
+| `captain.route.js` | Routes | ✅ Ready | Captain API endpoints |
+
+</div>
 
 </div>
 
@@ -945,20 +985,49 @@ CORS_ORIGIN=https://yourdomain.com
 
 <div align="center">
 
+#### 🚀 Quick Start Guide
+
 ```bash
-# 1. Fork the repository
-# 2. Create a feature branch
+# 1️⃣ Fork the repository
+git clone https://github.com/your-username/sawaridotpk.git
+cd sawaridotpk
+
+# 2️⃣ Create a feature branch
 git checkout -b feature/amazing-feature
 
-# 3. Make your changes and add tests if applicable
-# 4. Commit your changes
-git commit -m 'Add amazing feature'
+# 3️⃣ Install dependencies
+cd backend
+npm install
 
-# 5. Push to the branch
+# 4️⃣ Make your changes and test
+# ... your code changes ...
+
+# 5️⃣ Commit your changes
+git add .
+git commit -m '✨ Add amazing feature'
+
+# 6️⃣ Push to your fork
 git push origin feature/amazing-feature
 
-# 6. Open a Pull Request
+# 7️⃣ Open a Pull Request
+# Go to GitHub and create a new Pull Request
 ```
+
+</div>
+
+#### 📝 Development Workflow
+
+<div align="center">
+
+| **Step** | **Action** | **Description** |
+|----------|------------|-----------------|
+| **1️⃣ Fork** | Clone repository | Create your own copy of the project |
+| **2️⃣ Branch** | Create feature branch | Work on isolated feature/issue |
+| **3️⃣ Code** | Implement changes | Write clean, documented code |
+| **4️⃣ Test** | Verify functionality | Ensure everything works correctly |
+| **5️⃣ Commit** | Save changes | Use descriptive commit messages |
+| **6️⃣ Push** | Upload to GitHub | Share your changes |
+| **7️⃣ PR** | Create Pull Request | Submit for review |
 
 </div>
 
