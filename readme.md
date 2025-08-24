@@ -162,6 +162,10 @@ npm start
 | `POST` | `/api/passengers/login` | Passenger login | ❌ No | ✅ Ready |
 | `GET` | `/api/passengers/profile` | Get passenger profile | ✅ Yes | ✅ Ready |
 | `POST` | `/api/passengers/logout` | Passenger logout | ✅ Yes | ✅ Ready |
+| `POST` | `/api/captain/register` | Register a new captain | ❌ No | ✅ Ready |
+| `POST` | `/api/captain/login` | Captain login | ❌ No | ✅ Ready |
+| `GET` | `/api/captain/profile` | Get captain profile | ✅ Yes | ✅ Ready |
+| `POST` | `/api/captain/logout` | Captain logout | ✅ Yes | ✅ Ready |
 
 </div>
 
@@ -409,6 +413,340 @@ Code: 200 OK
 
 ---
 
+### 5️⃣ Register a New Captain
+
+<div align="center">
+
+**`POST` `/api/captain/register`**
+
+![Auth Required](https://img.shields.io/badge/Auth%20Required-No-red?style=for-the-badge)
+
+</div>
+
+#### 📝 Request Body
+
+| Parameter | Type | Required | Description | Validation |
+|-----------|------|----------|-------------|------------|
+| `firstname` | String | ✅ Yes | Captain's first name | Min 3 characters |
+| `lastname` | String | ✅ Yes | Captain's last name | Min 3 characters |
+| `email` | String | ✅ Yes | Captain's email address | Valid email format |
+| `password` | String | ✅ Yes | Captain's password | Min 6 characters |
+| `vehicle` | Object | ✅ Yes | Vehicle information | See vehicle schema below |
+| `location` | Object | ✅ Yes | Captain's location | See location schema below |
+
+#### 🚗 Vehicle Object Schema
+
+| Parameter | Type | Required | Description | Validation |
+|-----------|------|----------|-------------|------------|
+| `type` | String | ✅ Yes | Vehicle type | 'car', 'bike', or 'rickshaw' |
+| `make` | String | ✅ Yes | Vehicle manufacturer | Non-empty string |
+| `model` | String | ✅ Yes | Vehicle model | Non-empty string |
+| `year` | Number | ❌ No | Manufacturing year | Between 1990 and current year |
+| `color` | String | ❌ No | Vehicle color | Any string |
+| `numberPlate` | String | ✅ Yes | License plate number | Format: LEB-1234 |
+| `capacity` | Number | ✅ Yes | Passenger capacity | Minimum 1 |
+
+#### 📍 Location Object Schema
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `latitude` | Number | ✅ Yes | Latitude coordinate |
+| `longitude` | Number | ✅ Yes | Longitude coordinate |
+
+#### 📤 Example Request
+
+```json
+{
+  "firstname": "Ahmed",
+  "lastname": "Khan",
+  "email": "ahmed.khan@example.com",
+  "password": "password123",
+  "vehicle": {
+    "type": "car",
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2020,
+    "color": "White",
+    "numberPlate": "LEB-1234",
+    "capacity": 4
+  },
+  "location": {
+    "latitude": 33.7490,
+    "longitude": -84.3880
+  }
+}
+```
+
+#### ✅ Success Response
+
+```
+Code: 201 Created
+```
+
+```json
+{
+  "message": "Captain registered successfully",
+  "captain": {
+    "_id": "64f8a1b2c3d4e5f6a7b8c9d0",
+    "firstname": "Ahmed",
+    "lastname": "Khan",
+    "email": "ahmed.khan@example.com",
+    "status": "active",
+    "vehicle": {
+      "type": "car",
+      "make": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "color": "White",
+      "numberPlate": "LEB-1234",
+      "capacity": 4
+    },
+    "location": {
+      "latitude": 33.7490,
+      "longitude": -84.3880
+    },
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### ❌ Error Responses
+
+<div align="center">
+
+| Status | Error Type | Response |
+|--------|------------|----------|
+| `400` | Validation failed | ![Bad Request](https://img.shields.io/badge/400-Bad%20Request-red) |
+| `400` | Vehicle type invalid | ![Bad Request](https://img.shields.io/badge/400-Bad%20Request-red) |
+| `400` | Number plate format invalid | ![Bad Request](https://img.shields.io/badge/400-Bad%20Request-red) |
+| `400` | Number plate already exists | ![Bad Request](https://img.shields.io/badge/400-Bad%20Request-red) |
+| `409` | Email already exists | ![Conflict](https://img.shields.io/badge/409-Conflict-orange) |
+| `500` | Internal server error | ![Server Error](https://img.shields.io/badge/500-Server%20Error-red) |
+
+</div>
+
+**💡 Note:** Upon successful registration, a JWT token is generated and returned in the response. The vehicle number plate must be unique across all captains.
+
+---
+
+### 6️⃣ Captain Login
+
+<div align="center">
+
+**`POST` `/api/captain/login`**
+
+![Auth Required](https://img.shields.io/badge/Auth%20Required-No-red?style=for-the-badge)
+
+</div>
+
+#### 📝 Request Body
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `email` | String | ✅ Yes | Captain's email address |
+| `password` | String | ✅ Yes | Captain's password |
+
+#### 📤 Example Request
+
+```json
+{
+  "email": "ahmed.khan@example.com",
+  "password": "password123"
+}
+```
+
+#### ✅ Success Response
+
+```
+Code: 200 OK
+```
+
+```json
+{
+  "success": true,
+  "message": "Captain logged in successfully",
+  "captain": {
+    "_id": "64f8a1b2c3d4e5f6a7b8c9d0",
+    "firstname": "Ahmed",
+    "lastname": "Khan",
+    "email": "ahmed.khan@example.com",
+    "status": "active",
+    "vehicle": {
+      "type": "car",
+      "make": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "color": "White",
+      "numberPlate": "LEB-1234",
+      "capacity": 4
+    },
+    "location": {
+      "latitude": 33.7490,
+      "longitude": -84.3880
+    },
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### ❌ Error Responses
+
+<div align="center">
+
+| Status | Error Type | Response |
+|--------|------------|----------|
+| `400` | Missing fields | ![Bad Request](https://img.shields.io/badge/400-Bad%20Request-red) |
+| `400` | Invalid email format | ![Bad Request](https://img.shields.io/badge/400-Bad%20Request-red) |
+| `401` | Invalid credentials | ![Unauthorized](https://img.shields.io/badge/401-Unauthorized-orange) |
+| `500` | Internal server error | ![Server Error](https://img.shields.io/badge/500-Server%20Error-red) |
+
+</div>
+
+**💡 Note:** Upon successful login, a JWT token is set in an HTTP-only cookie and returned in the response.
+
+---
+
+### 7️⃣ Get Captain Profile
+
+<div align="center">
+
+**`GET` `/api/captain/profile`**
+
+![Auth Required](https://img.shields.io/badge/Auth%20Required-Yes-green?style=for-the-badge)
+
+</div>
+
+#### 🔑 Headers
+
+```
+Authorization: Bearer <jwt-token>
+```
+
+#### ✅ Success Response
+
+```
+Code: 200 OK
+```
+
+```json
+{
+  "success": true,
+  "message": "Captain profile retrieved successfully",
+  "captain": {
+    "_id": "64f8a1b2c3d4e5f6a7b8c9d0",
+    "firstname": "Ahmed",
+    "lastname": "Khan",
+    "email": "ahmed.khan@example.com",
+    "status": "active",
+    "vehicle": {
+      "type": "car",
+      "make": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "color": "White",
+      "numberPlate": "LEB-1234",
+      "capacity": 4
+    },
+    "location": {
+      "latitude": 33.7490,
+      "longitude": -84.3880
+    },
+    "socketId": null,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+#### ❌ Error Responses
+
+<div align="center">
+
+| Status | Error Type | Response |
+|--------|------------|----------|
+| `401` | No token | ![Unauthorized](https://img.shields.io/badge/401-Unauthorized-orange) |
+| `401` | Invalid token | ![Unauthorized](https://img.shields.io/badge/401-Unauthorized-orange) |
+| `500` | Internal server error | ![Server Error](https://img.shields.io/badge/500-Server%20Error-red) |
+
+</div>
+
+**💡 Note:** This endpoint returns the authenticated captain's profile data excluding sensitive information like password.
+
+---
+
+### 8️⃣ Captain Logout
+
+<div align="center">
+
+**`POST` `/api/captain/logout`**
+
+![Auth Required](https://img.shields.io/badge/Auth%20Required-Yes-green?style=for-the-badge)
+
+</div>
+
+#### 🔑 Headers
+
+```
+Authorization: Bearer <jwt-token>
+```
+
+#### ✅ Success Response
+
+```
+Code: 200 OK
+```
+
+```json
+{
+  "success": true,
+  "message": "Captain logged out successfully",
+  "captain": {
+    "_id": "64f8a1b2c3d4e5f6a7b8c9d0",
+    "firstname": "Ahmed",
+    "lastname": "Khan",
+    "email": "ahmed.khan@example.com",
+    "status": "active",
+    "vehicle": {
+      "type": "car",
+      "make": "Toyota",
+      "model": "Corolla",
+      "year": 2020,
+      "color": "White",
+      "numberPlate": "LEB-1234",
+      "capacity": 4
+    },
+    "location": {
+      "latitude": 33.7490,
+      "longitude": -84.3880
+    },
+    "socketId": null,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+#### ❌ Error Responses
+
+<div align="center">
+
+| Status | Error Type | Response |
+|--------|------------|----------|
+| `401` | No token | ![Unauthorized](https://img.shields.io/badge/401-Unauthorized-orange) |
+| `401` | Invalid token | ![Unauthorized](https://img.shields.io/badge/401-Unauthorized-orange) |
+| `404` | Captain not found | ![Not Found](https://img.shields.io/badge/404-Not%20Found-red) |
+| `500` | Internal server error | ![Server Error](https://img.shields.io/badge/500-Server%20Error-red) |
+
+</div>
+
+**💡 Note:** This endpoint clears the authentication cookie and clears the captain's socketId for real-time features.
+
+---
+
 ## 🗄️ Database Schema
 
 ### 📊 Passenger Model
@@ -443,6 +781,66 @@ Code: 200 OK
 }
 ```
 
+### 🚗 Captain Model
+
+```javascript
+{
+  firstname: {
+    type: String,
+    required: true,
+    minlength: 3
+  },
+  lastname: {
+    type: String,
+    required: true,
+    minlength: 3
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    validate: email format
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false  // 🔒 Hidden from queries by default
+  },
+  socketId: {
+    type: String  // 📡 For real-time features
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active'
+  },
+  vehicle: {
+    type: {
+      type: String,
+      enum: ['car', 'bike', 'rickshaw'],
+      required: true
+    },
+    make: { type: String, required: true },
+    model: { type: String, required: true },
+    year: { type: Number, min: 1990, max: current year },
+    color: { type: String },
+    numberPlate: { 
+      type: String, 
+      required: true, 
+      unique: true, 
+      uppercase: true,
+      match: /^[A-Z]{2,3}-\d{1,4}$/  // Format: LEB-1234
+    },
+    capacity: { type: Number, required: true, min: 1 }
+  },
+  location: {
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true }
+  }
+}
+```
+
 ---
 
 ## 🔧 Project Structure
@@ -454,15 +852,16 @@ Code: 200 OK
 ├── 📁 config/
 │   └── 🔗 connectDB.js          # Database connection
 ├── 📁 controllers/
-│   └── 🎮 passenger.controller.js # Route controllers
+│   ├── 🎮 passenger.controller.js # Passenger controllers
+│   └── 🎮 captain.controller.js   # Captain controllers
 ├── 📁 middleware/
 │   └── 🛡️ auth.middleware.js    # JWT authentication
 ├── 📁 models/
-│   └── 📊 passenger.model.js    # Passenger schema
+│   ├── 📊 passenger.model.js    # Passenger schema
+│   └── 📊 captain.model.js      # Captain schema
 ├── 📁 routes/
-│   └── 🛣️ passenger.route.js    # API routes
-├── 📁 services/
-│   └── ⚙️ passenger.service.js  # Business logic
+│   ├── 🛣️ passenger.route.js    # Passenger API routes
+│   └── 🛣️ captain.route.js      # Captain API routes
 ├── 🚀 app.js                    # Express app setup
 └── 📦 package.json
 ```

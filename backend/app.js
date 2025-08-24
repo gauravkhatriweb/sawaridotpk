@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/connectDB.js';
 import passengerRoutes from './routes/passenger.route.js';
-
+import captainRoutes from './routes/captain.route.js'
 dotenv.config();
 
 const app = express();
@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/passengers', passengerRoutes);
+app.use('/api/captain', captainRoutes);
 
 connectDB();
 

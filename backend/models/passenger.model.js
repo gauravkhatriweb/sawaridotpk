@@ -10,7 +10,6 @@ const passengerSchema = new mongoose.Schema({
     },
     lastname: {
         type: String,
-        required: true,
         minlength: [3, 'Last name must be at least 3 characters long'],
     },
     email: {
@@ -38,7 +37,8 @@ const passengerSchema = new mongoose.Schema({
 
 // Add methods to schema
 passengerSchema.methods.generateToken = async function () {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: this._id },process.env.JWT_SECRET,{ expiresIn: '24h' });
+    return token;
 };
 
 passengerSchema.methods.comparePassword = async function (password) {

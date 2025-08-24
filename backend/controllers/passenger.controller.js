@@ -1,5 +1,4 @@
 
-import { createPassenger, loginPassenger as loginPassengerService, logoutPassenger as logoutPassengerService } from "../services/passenger.service.js";
 import PassengerModel from "../models/passenger.model.js";
 
 export const registerPassenger = async (req, res, next) => {
@@ -53,9 +52,15 @@ export const registerPassenger = async (req, res, next) => {
             });
         }
         
-        // Hash password and create passenger using service
+        // Hash password and create passenger
         const hashedPassword = await PassengerModel.hashPassword(password);
-        const newPassenger = await createPassenger(firstname, lastname, email, hashedPassword);
+        const newPassenger = new PassengerModel({
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword
+        });
+        await newPassenger.save();
         const token = await newPassenger.generateToken();
         
         res.status(201).json({
@@ -101,8 +106,9 @@ export const logoutPassenger = async (req, res, next) => {
         // Passenger is already attached to req by the middleware
         const passenger = req.passenger;
         
-        // Logout passenger using service
-        const loggedOutPassenger = await logoutPassengerService(passenger._id);
+        // Logout passenger (clear socketId if needed)
+        passenger.socketId = null;
+        const loggedOutPassenger = await passenger.save();
         
         // Clear the cookie
         res.clearCookie("accessToken", {
@@ -162,8 +168,17 @@ export const loginPassenger = async (req, res, next) => {
             });
         }
         
-        // Login passenger using service
-        const passenger = await loginPassengerService(email, password);
+        // Login passenger
+        const passenger = await PassengerModel.findOne({ email }).select('+password');
+        if (!passenger) {
+            throw new Error("Invalid email or password");
+        }
+        
+        const isPasswordValid = await passenger.comparePassword(password);
+        if (!isPasswordValid) {
+            throw new Error("Invalid email or password");
+        }
+        
         const token = await passenger.generateToken();
         
         // Set cookie options
